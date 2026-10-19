@@ -106,7 +106,7 @@ flowchart TD
 |---|---|
 | ![board](assets/ui-tracking-board-en.png) | ![guard](assets/ui-rbac-guard-en.png) |
 
-The UI framework is fully bilingual (zh/en, one-click switch); business rows keep Chinese seed names — data locale is independent of UI locale, exactly as a real cross-border freight operation would look.
+The UI framework is fully bilingual (zh/en, one-click switch); the demo business corpus itself is localized to English (frontend seed files), so screenshots are readable end-to-end for international reviewers. Every screenshot passed a programmatic zero-CJK gate (whole-page text scan before capture) — "all English" is asserted, not eyeballed.
 
 The guard screen above shows the tenancy/authorization seam end-to-end: a viewer-role session hitting an admin page gets a denial page that names the exact missing permission code (`admin.users:READ`) — no silent blanks, no stack traces.
 
