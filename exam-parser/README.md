@@ -13,7 +13,11 @@ flowchart LR
     UI["JavaFX desktop client<br/>review + correction UX"]
     subgraph OCR["Python OCR service fleet (PaddleOCR)"]
         ORCH["Pipeline orchestrator<br/>plain HTTP, FIFO serial"]
-        M1["fast OCR"] M2["layout"] M3["formula"] M4["table"] M5["vision-language"]
+        M1["fast OCR"]
+        M2["layout"]
+        M3["formula"]
+        M4["table"]
+        M5["vision-language"]
     end
     subgraph Java["Java rendering pipeline (Spring Boot)"]
         P["ingest → classify → formula → split → render → QA"]
@@ -26,6 +30,8 @@ flowchart LR
     UI --> P
     P --> DB --> OUT
 ```
+
+> Rendered fallback: [assets/pipeline.png](assets/pipeline.png)
 
 **Why this topology**: OCR model inference (GPU, Python ecosystem) and deterministic document rendering (POI/PDFBox, strict Docx fidelity) have opposite runtime profiles. Separate fleets keep GPU-heavy OCR horizontally swappable while the Java pipeline owns the correctness-critical transformation — and each side is tested with the tools that fit it.
 

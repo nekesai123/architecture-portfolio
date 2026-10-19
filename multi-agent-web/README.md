@@ -17,7 +17,9 @@ flowchart LR
         MR["Model registry<br/>+ dispatch gate"]
     end
     subgraph Providers["Provider adapters (open/closed)"]
-        B1["opencode"] B2["openrouter"] B3["openai-compatible"]
+        B1["opencode"]
+        B2["openrouter"]
+        B3["openai-compatible"]
     end
     FS[("Filesystem<br/>jobs, artifacts, results")]
 
@@ -27,6 +29,8 @@ flowchart LR
     Providers --> FS
     FS --> Q
 ```
+
+> Rendered fallback: [assets/architecture.png](assets/architecture.png)
 
 **Why a filesystem as the persistence layer** (no Redis, no DB): jobs are files; state transitions are directory moves (six-state queue); artifacts are files on disk. For a single-node personal/team tool this means zero infrastructure, human-readable state at any moment, and crash recovery that is just *reading the directory*. The trade-off — no multi-node coordination — is out of scope by design and stated openly.
 
@@ -51,6 +55,18 @@ Three test layers, deliberately kept cheap and offline:
 - **Unit tests** for the artifact-reconciliation pure functions and provider adapters — no model calls, no network.
 - **Static + runtime self-checks**: syntax verification and DOM-level runtime checks for the zero-framework frontend.
 - **Smoke gates**: an API-level smoke suite as a merge gate, plus an optional full-chain smoke with real inference (explicitly not in the default gate, since it costs real quota and time).
+
+Real output from the offline suite (`npm test`, no model calls, no network):
+
+```text
+✅ validateCreate kind 反例：bogus/大小写错/带空白/null/非串 → 逐条 ok:false（仅 debate|review）
+✅ 向后兼容：kind 缺省视为 debate，validateCreate 既定错误语义与顺序逐字未变
+✅ reviewSummary 混合计数：1/2/1/1 → total5 四桶正确；未知 severity 只进 total（不进桶）
+✅ reviewSummary 非数组入参：throw TypeError（不静默返回全 0）
+debate-state-machine: 30/30 通过
+```
+
+Note the assertion discipline in the names: compatibility is asserted *verbatim* ("逐字未变"), and error paths must throw — never silently return zeros.
 
 ## 4. Honest Limitations & Trade-offs
 
