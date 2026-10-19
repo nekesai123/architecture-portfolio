@@ -8,6 +8,11 @@
 
 ## 1. System Context
 
+![Filesystem-backed multi-agent orchestration](assets/architecture.png)
+
+<details>
+<summary>view mermaid source</summary>
+
 ```mermaid
 flowchart LR
     UI["Single-page console<br/>(zero-framework JS, WebSocket)"]
@@ -30,7 +35,7 @@ flowchart LR
     FS --> Q
 ```
 
-> Rendered fallback: [assets/architecture.png](assets/architecture.png)
+</details>
 
 **Why a filesystem as the persistence layer** (no Redis, no DB): jobs are files; state transitions are directory moves (six-state queue); artifacts are files on disk. For a single-node personal/team tool this means zero infrastructure, human-readable state at any moment, and crash recovery that is just *reading the directory*. The trade-off — no multi-node coordination — is out of scope by design and stated openly.
 

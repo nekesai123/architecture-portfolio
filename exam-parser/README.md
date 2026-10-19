@@ -8,6 +8,11 @@
 
 ## 1. System Context
 
+![Three-tier parsing topology — OCR fleet, Java pipeline, MariaDB](assets/pipeline.png)
+
+<details>
+<summary>view mermaid source</summary>
+
 ```mermaid
 flowchart LR
     UI["JavaFX desktop client<br/>review + correction UX"]
@@ -31,7 +36,7 @@ flowchart LR
     P --> DB --> OUT
 ```
 
-> Rendered fallback: [assets/pipeline.png](assets/pipeline.png)
+</details>
 
 **Why this topology**: OCR model inference (GPU, Python ecosystem) and deterministic document rendering (POI/PDFBox, strict Docx fidelity) have opposite runtime profiles. Separate fleets keep GPU-heavy OCR horizontally swappable while the Java pipeline owns the correctness-critical transformation — and each side is tested with the tools that fit it.
 

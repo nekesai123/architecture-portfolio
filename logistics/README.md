@@ -8,6 +8,11 @@
 
 ## 1. System Context
 
+![System context — 15-module monolith with shared PostgreSQL](assets/system-context.png)
+
+<details>
+<summary>view mermaid source</summary>
+
 ```mermaid
 flowchart LR
     subgraph Clients
@@ -39,7 +44,7 @@ flowchart LR
     IN --> FX
 ```
 
-> Rendered fallback: [assets/system-context.png](assets/system-context.png)
+</details>
 
 **Why a modular monolith, not microservices**: a freight-forwarding chain is a strongly-coupled transactional flow (quote → booking → SI → charges → invoice); splitting it would trade local simplicity for distributed-transaction complexity no single-tenant-scale load justifies. Module boundaries are enforced by a dedicated **archtest module (ArchUnit)** so the monolith cannot silently rot into a big ball of mud — boundary violations fail the build.
 
@@ -67,6 +72,11 @@ flowchart LR
 
 ## 3. Quality Engineering (the core of this case)
 
+![Three-tier test system with dual-green acceptance gate](assets/test-pyramid.png)
+
+<details>
+<summary>view mermaid source</summary>
+
 ```mermaid
 flowchart TD
     U["Unit — 293 test files, JUnit5<br/>H2 in-memory, per-test UUID database<br/>mocks only at architectural boundaries"] --> I
@@ -76,7 +86,7 @@ flowchart TD
     G --> D["Dual-green discipline<br/>two consecutive SUCCESS runs required"]
 ```
 
-> Rendered fallback: [assets/test-pyramid.png](assets/test-pyramid.png)
+</details>
 
 - **Unit**: 293 test files; H2 in PostgreSQL mode with a unique database per test — tests cannot pollute each other even if they leak state. Concurrency tests use latches and (where timing windows exist) Awaitility; a global `forkedProcessTimeoutInSeconds` kills hung forks instead of hanging CI.
 - **Integration**: a `*IT` layer against real PostgreSQL — one database per test class, rebuilt by Flyway, seeded from the same SQL the acceptance gate uses. Catches what H2 cannot: real dialect behavior, real constraints, migration integrity. (A real lesson: three genuine defects — a dead boot-integration test, an authorization-gated E2E scenario, stale-frontend packaging — were all caught by this layer, not by unit tests.)
@@ -86,15 +96,17 @@ flowchart TD
 
 ## 4. Verification Evidence
 
-### Product walkthrough (fictional demo data)
+### Product walkthrough (English UI, fictional demo data)
 
-| Executive dashboard (zh) | Same UI in English |
+| Executive dashboard | CRM customer list |
 |---|---|
-| ![dashboard](assets/ui-dashboard.png) | ![english](assets/ui-locale-en.png) |
+| ![dashboard](assets/ui-dashboard-en.png) | ![crm](assets/ui-crm-en.png) |
 
 | Tracking swim-lane board | RBAC guard: viewer role denied, required code shown |
 |---|---|
-| ![board](assets/ui-tracking-board.png) | ![guard](assets/ui-rbac-guarded.png) |
+| ![board](assets/ui-tracking-board-en.png) | ![guard](assets/ui-rbac-guard-en.png) |
+
+The UI framework is fully bilingual (zh/en, one-click switch); business rows keep Chinese seed names — data locale is independent of UI locale, exactly as a real cross-border freight operation would look.
 
 The guard screen above shows the tenancy/authorization seam end-to-end: a viewer-role session hitting an admin page gets a denial page that names the exact missing permission code (`admin.users:READ`) — no silent blanks, no stack traces.
 
