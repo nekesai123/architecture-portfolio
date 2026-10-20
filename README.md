@@ -9,7 +9,7 @@ Public showcase of selected architecture work. Source repositories remain privat
 | Case | Domain | Stack | Highlights |
 |---|---|---|---|
 | [Logistics Management SaaS](logistics/) | Multi-tenant freight-forwarding platform | Java 21 · Spring Boot 3.5 · PostgreSQL 18 · jOOQ · React 18 | 15-module monolith, shared-schema tenancy, 8 business chains, 3-tier test system, AI-augmented delivery process |
-| [Exam Parser System](exam-parser/) | Document parsing pipeline (exam papers → question banks) | Java 23 · Spring Boot · PaddleOCR fleet · jOOQ/MariaDB | Proprietary binary format (MTEF) reverse engineering with audit-degradation, strategy-chain LaTeX cleanup, fuzz/metamorphic/corpus-baseline testing (~250 test files) |
+| [StudyOS — AI-Native Learning Intelligence Platform](studyos/) | Document parsing pipeline (exam papers → question banks) | Java 23 · Spring Boot · PaddleOCR fleet · jOOQ/MariaDB | Proprietary binary format (MTEF) reverse engineering with audit-degradation, strategy-chain LaTeX cleanup, fuzz/metamorphic/corpus-baseline testing (~250 test files) |
 | [Multi-Agent Web](multi-agent-web/) | LLM task orchestration platform | Node.js · Express · WebSocket | Filesystem-as-source-of-truth artifact reconciliation, verify-before-dispatch gate with caching, open/closed provider abstraction |
 
 ## Architecture Themes Across Cases
